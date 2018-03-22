@@ -82,6 +82,8 @@ SREGISTRY_USER_COMMIT=$(curl ${METADATA}/SREGISTRY_USER_COMMIT -H "${HEAD}")
 SREGISTRY_USER_TAG=$(curl ${METADATA}/SREGISTRY_USER_TAG -H "${HEAD}")
 SREGISTRY_CONTAINER_NAME=$(curl ${METADATA}/SREGISTRY_CONTAINER_NAME -H "${HEAD}")
 
+MACHINE_TYPE=$(curl http://metadata.google.internal/computeMetadata/v1/instance/machine-type -H "${HEAD}")
+
 SREGISTRY_BUILDER_STORAGE_BUCKET=$(curl ${METADATA}/SREGISTRY_BUILDER_STORAGE_BUCKET -H "${HEAD}")
 SREGISTRY_GOOGLE_STORAGE_PRIVATE=$(curl ${METADATA}/SREGISTRY_GOOGLE_STORAGE_PRIVATE -H "${HEAD}")
 
@@ -207,15 +209,21 @@ if [ -f ${CONTAINER} ]; then
     echo
 
     # Here is the test line to output to the massif file
+
     singularity run --bind data/:/scif/data $CONTAINER run valgrind
-    sudo mv data/massif* $MASSIF
+    mv data/massif* data/massif.out
+    sudo cp data/massif.out $MASSIF
     sudo touch $MASSIF && sudo chmod 757 $MASSIF
     ms_print $MASSIF >> massif-plot.log
     sudo mv massif-plot.log $WEBROOT && sudo chmod 757 $WEBROOT/massif-plot.log
+    echo $MACHINE_TYPE >> data/machine-type.txt
 
     STORAGE_FOLDER="gs://$SREGISTRY_BUILDER_STORAGE_BUCKET/github.com/$SREGISTRY_CONTAINER_NAME/$SREGISTRY_USER_BRANCH/$SREGISTRY_USER_COMMIT"
     CONTAINER_HASH=($(sha256sum "${CONTAINER}"))
-    CONTAINER_UPLOAD="${STORAGE_FOLDER}/${CONTAINER_HASH}:${SREGISTRY_USER_TAG}.massif.out"
+    CONTAINER_UPLOAD="${STORAGE_FOLDER}/$CONTAINER_HASH.tar.gz"
+
+    # Compress up data folder based on hash
+    tar -zcvf $CONTAINER_HASH.tar.gz data
 
     echo "Upload with format: 
 [storage-bucket]     : ${SREGISTRY_BUILDER_STORAGE_BUCKET} 
@@ -225,10 +233,7 @@ if [ -f ${CONTAINER} ]; then
   [branch]           : ${SREGISTRY_USER_BRANCH}
 [sha256sum]          : ${CONTAINER_HASH}
 [tag]                : ${SREGISTRY_USER_TAG}
-gs://[storage-bucket]/github.com/[github-namespace]/[sha256sum]:[tag].massif.out
-
-
-
+gs://[storage-bucket]/github.com/[github-namespace]/[sha256sum].tar.gz
 
 ${CONTAINER_UPLOAD}
 " | tee -a $WEBLOG
@@ -240,14 +245,14 @@ ${CONTAINER_UPLOAD}
         PRIVATE="-a public-read"
     fi
 
-    echo "gsutil cp $PRIVATE $CONTAINER $CONTAINER_UPLOAD"  | tee -a $WEBLOG
-    gsutil -h "x-goog-meta-type:container" \
+    echo "gsutil cp $PRIVATE $CONTAINER_HASH.tar.gz $CONTAINER_UPLOAD"  | tee -a $WEBLOG
+    gsutil -h "x-goog-meta-type:metrics" \
            -h "x-goog-meta-client:sregistry" \
            -h "x-goog-meta-tag:${SREGISTRY_USER_TAG}" \
            -h "x-goog-meta-commit:${SREGISTRY_USER_COMMIT}" \
            -h "x-goog-meta-hash:${CONTAINER_HASH}" \
            -h "x-goog-meta-uri:${SREGISTRY_CONTAINER_NAME}:${SREGISTRY_USER_TAG}@${SREGISTRY_USER_COMMIT}" \
-           cp $PRIVATE $CONTAINER $CONTAINER_UPLOAD | tee -a $WEBLOG
+           cp $PRIVATE $CONTAINER_HASH.tar.gz $CONTAINER_UPLOAD | tee -a $WEBLOG
 
 else
     echo "Container was not built, skipping upload to storage."  | tee -a $WEBLOG    
