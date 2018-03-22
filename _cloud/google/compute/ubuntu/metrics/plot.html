@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+        <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+        <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+        <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Singularity Hub</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="singularity container and workflow management" />
+        <meta name="keywords" content="singularity, containers" />
+        <meta name="author" content="vsoch" />
+
+        <link rel="icon" type="image/ico" href="assets/img/favicon.ico"/>
+
+        <!-- Facebook and Twitter integration -->
+        <meta property="og:title" content="singularity-hub"/>
+        <meta property="og:image" content=""/>
+        <meta property="og:url" content=""/>
+        <meta property="og:site_name" content="Singularity Hub"/>
+        <meta property="og:description" content="singularity container and workflow management"/>
+        <meta name="twitter:image" content="" />
+        <meta name="twitter:card" content="" />
+
+        <!-- Google Webfonts -->
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,100,500' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,300,100,500' rel='stylesheet' type='text/css'>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="assets/css/toastr.min.css" media="screen" type="text/css">                
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+
+<style>
+.btn-sm {
+  margin-top:20px !important;
+}
+
+.code-button {
+   color:white !important;
+}
+
+.btn:active, .btn:hover {
+  border: 1px solid transparent !important;
+  border-color: #ccc !important;
+  background: #CCC !important;
+}
+
+.btn:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#id_spec { 
+     position: absolute;
+     height:800px;
+     top: 0;
+     right: 0;
+     bottom: 0;
+     left: 0;
+}
+</style>
+
+        <!-- Animate.css -->
+        <link rel="stylesheet" href="assets/css/animate.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <!-- Theme Style -->
+        <link rel="stylesheet" href="assets/css/style.css">
+        <!-- Modernizr JS -->
+        <script src="assets/js/modernizr-2.6.2.min.js"></script>
+        <!-- FOR IE9 below -->
+        <!--[if lt IE 9]>
+        <script src="/assets/js/respond.min.js"></script>
+        <![endif]-->
+</head>
+
+
+<body>
+
+<script>
+function resetTerminal(content) {
+    var content = content || ''
+    content = '<br><span class="debug-info" color="#470888">Singularity Builder Robot Logger, reporting for duty!</span>' + content;
+    $('#logtext').html(content);
+}
+
+
+function updateLog() {
+    console.log("Updating log");
+    var content = ''
+    $.get('massif-plot.log', function(result){
+        var lines = result.split('\n')
+        $.each(lines, function(i,line){
+            line = line.replace('\r','<br>')
+            content = content+ '\n<br><span class="code-debug" style="color:#31708f">' + line +'</span>\n'
+        })
+        resetTerminal(content);    
+    });
+}
+
+setInterval(updateLog, 5000);
+
+</script>
+</body>
+</html>
+    
+    <body>
+    <header>
+   
+        <nav class="navbar navbar-toggleable-md navbar-default" role="navigation">
+
+        <a class="navbar-brand" 
+           href="/"
+           style="font-size:16px">The<span style="color:#e32929">Builder</span></a>
+        
+          <ul class="nav navbar-nav">
+
+            <li class="dropdown">
+                <a href="#" 
+                   class="dropdown-toggle" 
+                   data-toggle="dropdown" 
+                   role="button" 
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                Resources
+                <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="index.html">Builder Log</a></li> 
+                    <li><a href="massif.html">Resource Usage (raw)</a></li>
+                    <li><a href="https://www.singularity-hub.org">Singularity Hub</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="https://singularityhub.github.io/containers/" target="_blank">Registry</a></li>
+                </ul>
+            </li>
+            <li><a href="https://singularityhub.github.io/builders" target="_blank">User Guide</a></li>
+          </ul>
+    </nav>
+
+    </header>
+    
+    <div class="container-fluid" style="margin:30px">
+    
+<div id="fh5co-portfolio">
+
+<!-- Meta data about container-->
+<div class="row">
+
+    <div class="col-md-12">
+        <div class="card" style="padding:20px">
+            <div class="header">
+                <h3>
+                     <span class="icon-controls" style="position:relative;top:-70px">                     
+                     <button id='download-button' class='btn btn-xs' id='code-download'><i class="fa fa-download" style="color:black"></i></button>
+                     <button style="background:#31708f" data-color="#31708f" class='code-button btn btn-xs' id='code-debug'>Debug</button>
+                     <button style="background:#e37129" data-color='#e37129' class='code-button btn btn-xs' id='code-warning'>Warning</button>
+                     <button style="background:#e32929" data-color='#e32929' class='code-button btn btn-xs' id='code-error'>Error</button>
+                     <button style="background:#470888" data-color='#470888' class='code-button btn btn-xs' id='code-info'>Info</button>
+                     <button style="background:#d94fa0" data-color='#d94fa0' class='code-button btn btn-xs' id='code-download'>Download</button>     
+                     
+                     <a download="sregistry-builder-log.txt" 
+                        id="downloadlink" 
+                        style="display: none; font-size:12px">Download</a>
+                     
+                     </span>
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class='col-md-12'>  
+        <div id="logtext" class="well" style="border-radius:10px">
+            <br><span class="debug-info" color="#470888">Singularity Builder Robot Logger, reporting for duty!</span>
+         </div>
+     </div>
+
+</div>
+
+    
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.easing.1.3.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.waypoints.min.js"></script>
+    <script src="assets/js/toastr.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/bootstrap-checkbox-radio.js"></script>
+    <script src="assets/js/bootstrap-notify.js"></script>
+    <script src="assets/js/paper-dashboard.js"></script>
+
+    
+<script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+<script src="assets/js/materialize.min.js"></script>
+<script>
+(function () {
+
+$('.code-button').click(function(){
+  var codeblock = "." + $(this).attr('id');
+  if ($(codeblock).hasClass('hidden')){
+      $(codeblock).removeClass('hidden');
+      $(this).attr("style","background:"+$(this).attr('data-color'))
+  } else {
+     $(codeblock).addClass('hidden');
+     $(this).attr("style","background:#CCC")
+  }
+})
+
+// Download file
+// http://jsfiddle.net/uselesscode/qm5ag/
+var textFile = null,
+
+  makeTextFile = function (text) {
+    var data = new Blob([text], {type: 'text/plain'});
+
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+
+    textFile = window.URL.createObjectURL(data);
+
+    return textFile;
+  };
+
+
+  $('#download-button').click(function(){
+      var logtext = $("#logtext").text().replace("<br>", "\n");
+      var link = document.getElementById('downloadlink');
+      link.href = makeTextFile(logtext);
+      link.style.display = 'block';
+  })
+
+})();
+
+</script>
+
+    </body>
+</html>
