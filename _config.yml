@@ -9,7 +9,7 @@ domain: "https://vsoch.github.io/builders"
 # About/contact
 author:
   name:       Vanessa Sochat
-  url:        https://singularityhub.github.io/sregistry-cli
+  url:        https://vsoch.github.io/builders
 
 # Build settings
 markdown: kramdown
@@ -38,7 +38,7 @@ collections:
     output: true
     permalink: /cloud/:path
 
-repo: "https://www.github.com/singularityhub/builders"
+repo: "https://www.github.com/vsoch/builders"
 future: true
 
 defaults:
