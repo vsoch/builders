@@ -60,7 +60,7 @@ echo "Logs available at http://$IPADDRESS/" | tee -a $WEBLOG
 
 if [ -f "index.html" ]; then
     sudo cp index.html $WEBROOT
-    sudo cp -R assets $WEBBOOT
+    sudo cp -R assets $WEBBOOT/assets/
 else
     echo "Cannot find web index.html file in $PWD";
 fi
