@@ -4,7 +4,7 @@
 title: "Singularity Builders"
 description: "Static API to serve Singularity Builder Configs"
 baseurl: "/builders" #important: start with /
-domain: "https://singularityhub.github.io/builders"
+domain: "https://vsoch.github.io/builders"
 
 # About/contact
 author:
