@@ -82,15 +82,15 @@
 <script>
 function resetTerminal(content) {
     var content = content || ''
-    content = '<br><span class="debug-info" color="#470888">Singularity Builder Robot Logger, reporting for duty!</span>' + content;
+    content = '<br><span class="debug-info" color="#470888">The Builder Robot (valgrind --tool=massif), reporting for duty!</span>' + content;
     $('#logtext').html(content);
 }
 
 
 function updateLog() {
-    console.log("Updating log");
+    console.log("Updating massif");
     var content = ''
-    $.get('sregistry.log', function(result){
+    $.get('massif.log', function(result){
         var lines = result.split('\n')
         $.each(lines, function(i,line){
             line = line.replace('\r','<br>')
@@ -127,7 +127,7 @@ setInterval(updateLog, 5000);
                 Resources
                 <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="massif.html">Resource Usage (valgrind massif)</a></li>
+                    <li><a href="/">The Builder Log</a></li>
                     <li><a href="https://www.singularity-hub.org">Singularity Hub</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="https://singularityhub.github.io/containers/" target="_blank">Registry</a></li>

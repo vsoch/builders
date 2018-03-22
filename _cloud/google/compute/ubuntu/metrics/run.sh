@@ -28,11 +28,13 @@
 #
 ################################################################################
 
-# Web Log
+# Logging
 
 WEBROOT=/var/www/html
+MASSIF="${WEBROOT}/massif.log"
 WEBLOG="${WEBROOT}/sregistry.log"
 sudo touch $WEBLOG && sudo chmod 757 $WEBLOG
+sudo touch $MASSIF && sudo chmod 757 $MASSIF
 echo "Installing Singularity Dependencies" | tee -a $WEBLOG
 
 sudo apt-get -y install git \
@@ -173,6 +175,7 @@ CONTAINER=$SREGISTRY_USER_COMMIT.simg
 if [ -f "$SINGULARITY_RECIPE" ]; then
 
     # Record time and perform build
+
     echo "Found recipe: ${SINGULARITY_RECIPE}" | tee -a $WEBLOG
     echo "Start Time: $(date)." | tee -a $WEBLOG
     sudo singularity build --isolated $CONTAINER "${SINGULARITY_RECIPE}" | tee -a $WEBLOG
@@ -200,12 +203,16 @@ fi
 if [ -f ${CONTAINER} ]; then
 
     echo 
-    echo "# Storage"
+    echo "# Metrics"
     echo
+
+    # Here is the test line to output to the massif file
+    singularity run --bind data/:/scif/data $CONTAINER run valgrind
+    sudo mv data/massif* $MASSIF
 
     STORAGE_FOLDER="gs://$SREGISTRY_BUILDER_STORAGE_BUCKET/github.com/$SREGISTRY_CONTAINER_NAME/$SREGISTRY_USER_BRANCH/$SREGISTRY_USER_COMMIT"
     CONTAINER_HASH=($(sha256sum "${CONTAINER}"))
-    CONTAINER_UPLOAD="${STORAGE_FOLDER}/${CONTAINER_HASH}:${SREGISTRY_USER_TAG}.simg"
+    CONTAINER_UPLOAD="${STORAGE_FOLDER}/${CONTAINER_HASH}:${SREGISTRY_USER_TAG}.massif.out"
 
     echo "Upload with format: 
 [storage-bucket]     : ${SREGISTRY_BUILDER_STORAGE_BUCKET} 
@@ -215,7 +222,10 @@ if [ -f ${CONTAINER} ]; then
   [branch]           : ${SREGISTRY_USER_BRANCH}
 [sha256sum]          : ${CONTAINER_HASH}
 [tag]                : ${SREGISTRY_USER_TAG}
-gs://[storage-bucket]/github.com/[github-namespace]/[sha256sum]:[tag].simg
+gs://[storage-bucket]/github.com/[github-namespace]/[sha256sum]:[tag].massif.out
+
+
+
 
 ${CONTAINER_UPLOAD}
 " | tee -a $WEBLOG
