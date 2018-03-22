@@ -6596,13 +6596,6 @@ pre {
   padding-right: 20px;
   margin-right: 10px;
 }
-.btn:hover, .btn:focus, .btn:active {
-  background: #fff !important;
-  color: #444 !important;
-  border: 2px solid #444 !important;
-  box-shadow: none;
-  outline: none;
-}
 
 .btn-outline {
   border: 2px solid #ccc !important;
