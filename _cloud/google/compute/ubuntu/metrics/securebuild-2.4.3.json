@@ -1,0 +1,64 @@
+---
+title:  "Vagrind and Time Metrics with Ubuntu on Google Compute Engine"
+date:   2018-03-22 1:27:00
+layout: bundle
+author: Vanessa Sochat
+runscript: run.sh
+tags: 
+ - ubuntu
+ - singularity
+ - valgrind
+ - time
+ - metrics
+ - google-compute
+ - google-storage
+metadata:
+ - key: GOOGLE_COMPUTE_PROJECT
+   value: "debian-cloud"
+ - key: SREGISTRY_BUILDER_machine_type
+   value: "n1-standard-1"
+ - key: SREGISTRY_BUILDER_BRANCH
+   value: "container/races"
+ - key: GOOGLE_COMPUTE_IMAGE_FAMILY
+   value: "debian-8"
+ - key: SINGULARITY_BRANCH
+   value: "feature-squashbuild-secbuild-2.4.3"
+ - key: SINGULARITY_REPO
+   value: "https://github.com/cclerget/singularity.git"
+ - key: SREGISTRY_GOOGLE_STORAGE_PRIVATE
+   value: false
+---
+
+        {
+            "disks": [],
+            "labels": [{
+                "key": "sregistry",
+                "value": "builder"
+             }],
+            "tags": {
+               "items": [
+                    "http-server",
+                    "https-server"
+            ]},
+            "networkInterfaces": [
+                {
+                    "accessConfigs": [
+                        {
+                            "name": "External NAT",
+                            "type": "ONE_TO_ONE_NAT"
+                        }
+                    ],
+                    "network": "global/networks/default"
+                }
+            ],
+            "serviceAccounts": [
+                {
+                    "email": "default",
+                    "scopes": [
+                        "https://www.googleapis.com/auth/compute",
+                        "https://www.googleapis.com/auth/devstorage.read_write",
+                        "https://www.googleapis.com/auth/logging.write"
+                    ]
+                }
+            ]
+        }

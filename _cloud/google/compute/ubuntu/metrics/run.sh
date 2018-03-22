@@ -6,6 +6,8 @@
 #                   Google Storage should have Full
 #                   All other APIs None,
 #
+# This script adds a time and valgrind command to output build and runtime 
+# metrics that can be compared across container builds
 #
 # Copyright (C) 2018 The Board of Trustees of the Leland Stanford Junior
 # University.
@@ -43,6 +45,8 @@ sudo apt-get -y install git \
                    autoconf \
                    debootstrap \
                    yum \
+                   time \
+                   valgrind \
                    uuid-dev \
                    libssl-dev
 
@@ -56,6 +60,7 @@ echo "Logs available at http://$IPADDRESS/" | tee -a $WEBLOG
 
 if [ -f "index.html" ]; then
     sudo cp index.html $WEBROOT
+    sudo cp -R assets $WEBBOOT
 else
     echo "Cannot find web index.html file in $PWD";
 fi
