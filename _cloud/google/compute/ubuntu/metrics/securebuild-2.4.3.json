@@ -17,8 +17,6 @@ metadata:
    value: "debian-cloud"
  - key: SREGISTRY_BUILDER_machine_type
    value: "n1-standard-1"
- - key: SREGISTRY_BUILDER_BRANCH
-   value: "container/races"
  - key: GOOGLE_COMPUTE_IMAGE_FAMILY
    value: "debian-8"
  - key: SINGULARITY_BRANCH
