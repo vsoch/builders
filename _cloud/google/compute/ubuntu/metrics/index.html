@@ -92,7 +92,7 @@ function updateLog() {
     var content = ''
     $.get('sregistry.log', function(result){
         var lines = result.replace('\n','</span><br><span class="code-debug" style="color:#31708f">\n')
-        content = '<br><span class="code-debug" style="color:#31708f">' + content + '</span>\n';
+        content = '<br><span class="code-debug" style="color:#31708f">' + lines + '</span>\n';
         resetTerminal(content);
     });
 }
