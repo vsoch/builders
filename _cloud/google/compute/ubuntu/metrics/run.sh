@@ -175,7 +175,7 @@ if [ -f "$SINGULARITY_RECIPE" ]; then
     # Record time and perform build
     echo "Found recipe: ${SINGULARITY_RECIPE}" | tee -a $WEBLOG
     echo "Start Time: $(date)." | tee -a $WEBLOG
-    sudo singularity build $CONTAINER "${SINGULARITY_RECIPE}" | tee -a $WEBLOG
+    sudo singularity build --isolated $CONTAINER "${SINGULARITY_RECIPE}" | tee -a $WEBLOG
 
     # Assess return value
     ret=$?

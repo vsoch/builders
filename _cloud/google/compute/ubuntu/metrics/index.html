@@ -93,6 +93,7 @@ function updateLog() {
     $.get('sregistry.log', function(result){
         var lines = result.split('\n')
         $.each(lines, function(i,line){
+            line = line.replace('\r','<br>')
             content = content+ '\n<br><span class="code-debug" style="color:#31708f">' + line +'</span>\n'
         })
         resetTerminal(content);    
