@@ -29,9 +29,7 @@
         <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,300,100,500' rel='stylesheet' type='text/css'>
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
-        <link rel="stylesheet" href="assets/css/toastr.min.css" media="screen" type="text/css">
-                
-        <link rel="stylesheet" href="assets/css/material-table.css">
+        <link rel="stylesheet" href="assets/css/toastr.min.css" media="screen" type="text/css">                
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
 
 <style>
@@ -84,7 +82,7 @@
 <script>
 function resetTerminal(content) {
     var content = content || ''
-    content = '<br><span>Singularity Builder Robot Logger, reporting for duty!</span>' + content;
+    content = '<br><span class="debug-info" color="#470888">Singularity Builder Robot Logger, reporting for duty!</span>' + content;
     $('#logtext').html(content);
 }
 
