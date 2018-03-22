@@ -91,9 +91,11 @@ function updateLog() {
     console.log("Updating log");
     var content = ''
     $.get('sregistry.log', function(result){
-        var lines = result.replace('\n','</span><br><span class="code-debug" style="color:#31708f">\n')
-        content = '<br><span class="code-debug" style="color:#31708f">' + lines + '</span>\n';
-        resetTerminal(content);
+        var lines = result.split('\n')
+        $.each(lines, function(i,line){
+            content = content+ '\n<br><span class="code-debug" style="color:#31708f">' + line +'</span>\n'
+        })
+        resetTerminal(content);    
     });
 }
 
